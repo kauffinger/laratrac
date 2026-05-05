@@ -1,84 +1,58 @@
-# Help agents understand your Laravel app
+# laratrac
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/kauffinger/laratrac.svg?style=flat-square)](https://packagist.org/packages/kauffinger/laratrac)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/kauffinger/laratrac/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/kauffinger/laratrac/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/kauffinger/laratrac/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/kauffinger/laratrac/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/kauffinger/laratrac.svg?style=flat-square)](https://packagist.org/packages/kauffinger/laratrac)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+Help coding agents understand your Laravel app. Laratrac wraps
+[deptrac](https://github.com/deptrac/deptrac) to produce a JSON map of your
+app's layers and their dependencies — drop the file in front of Claude /
+Cursor / Codex and it can navigate the codebase without guessing.
 
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laratrac.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laratrac)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
-## Installation
-
-You can install the package via composer:
+## Install
 
 ```bash
 composer require kauffinger/laratrac
 ```
 
-You can publish and run the migrations with:
+## Use
+
+Zero config: laratrac auto-detects layers from `app/` (Controllers, Models,
+Jobs, Events, Listeners, Mail, Notifications, Policies, Services, Actions,
+Repositories, …). Only directories that exist on disk are included.
 
 ```bash
-php artisan vendor:publish --tag="laratrac-migrations"
-php artisan migrate
+# JSON for agents — writes .laratrac/metadata.json
+php artisan laratrac:json
+
+# Mermaid diagram for humans — writes .laratrac/diagram.mmd
+php artisan laratrac:mermaid
 ```
 
-You can publish the config file with:
+`--stdout` prints to stdout instead of writing a file. `--out=path` overrides
+the destination. `laratrac:json` also accepts `--mode=graph_only` for a
+slimmer output without per-layer class lists.
+
+## Customize
 
 ```bash
-php artisan vendor:publish --tag="laratrac-config"
+# Materialize the auto-detected default to deptrac.yaml
+php artisan laratrac:init
+
+# Drop a markdown brief at .laratrac/AGENT_GUIDE.md and point your
+# coding agent at it: "Read this and tune deptrac.yaml for our codebase."
+php artisan laratrac:guide
 ```
 
-This is the contents of the published config file:
+Once `deptrac.yaml` exists at the project root, laratrac uses it as the
+source of truth. The full deptrac collector reference (directory, extends,
+implements, attribute, …) is at <https://github.com/deptrac/deptrac>.
 
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="laratrac-views"
-```
-
-## Usage
-
-```php
-$laratrac = new Laratrac\Laratrac();
-echo $laratrac->echoPhrase('Hello, Laratrac!');
-```
-
-## Testing
-
-```bash
-composer test
-```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [Konstantin Auffinger](https://github.com/kauffinger)
-- [All Contributors](../../contributors)
+Laratrac is **not** an architecture-testing tool — the default ruleset is
+fully permissive. The goal is to *describe* the architecture, not enforce
+it.
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+[MIT](LICENSE.md)
