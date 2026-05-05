@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Laratrac\Laratrac\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaratracCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laratrac';
 
     public $description = 'My command';
 
