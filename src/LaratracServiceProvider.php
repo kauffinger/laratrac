@@ -2,24 +2,23 @@
 
 namespace Laratrac\Laratrac;
 
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Laratrac\Laratrac\Commands\LaratracCommand;
+use Illuminate\Support\ServiceProvider;
+use Laratrac\Laratrac\Commands\GuideCommand;
+use Laratrac\Laratrac\Commands\InitCommand;
+use Laratrac\Laratrac\Commands\JsonCommand;
+use Laratrac\Laratrac\Commands\MermaidCommand;
 
-class LaratracServiceProvider extends PackageServiceProvider
+class LaratracServiceProvider extends ServiceProvider
 {
-    public function configurePackage(Package $package): void
+    public function boot(): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
-        $package
-            ->name('laratrac')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_laratrac_table')
-            ->hasCommand(LaratracCommand::class);
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                GuideCommand::class,
+                InitCommand::class,
+                JsonCommand::class,
+                MermaidCommand::class,
+            ]);
+        }
     }
 }
